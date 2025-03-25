@@ -1,0 +1,150 @@
+n= 1
+pb
+pb
+sb
+is the b sorted? 1
+temp = 2 
+j = 1
+ i = 1
+position_a = 1 
+position_a = 2 
+position_a = 3 
+position_a = 4 
+position_a = 5 
+position_a = 6 
+position_a = 7 
+temp = 1 
+j = 1
+ i = 8
+position_a = 8 
+position_a = 8
+ closeset_node = 1
+rb
+stak a
+4
+17
+5
+3
+-20
+8
+9
+-1
+stak b
+15
+2
+pb
+position_a = 8
+ closeset_node = 1
+rb
+stak a
+17
+5
+3
+-20
+8
+9
+-1
+stak b
+15
+2
+4
+pb
+position_a = 8
+ closeset_node = 1
+rb
+stak a
+5
+3
+-20
+8
+9
+-1
+stak b
+15
+2
+4
+17
+pb
+position_a = 8
+ closeset_node = 1
+rb
+stak a
+3
+-20
+8
+9
+-1
+stak b
+15
+2
+4
+17
+5
+pb
+position_a = 8
+ closeset_node = 1
+rb
+stak a
+-20
+8
+9
+-1
+stak b
+15
+2
+4
+17
+5
+3
+pb
+rra
+is the a sorted? 1
+temp = 0 
+j = 0
+ i = 0
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+pa
+position_a = 0
+ closeset_node = 0
+stak a
+5
+17
+4
+2
+15
+-20
+-1
+8
+9
+stak b
+3
+pa
+is the a sorted? 0
+stak a final
+3
+5
+17
+4
+2
+15
+-20
+-1
+8
+9
+stak b final

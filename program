@@ -1,0 +1,885 @@
+
+# include <stdarg.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <limits.h>
+#include <unistd.h>
+#include <stdio.h> 
+
+int ft_len(char *str)
+{
+    int i;
+    
+    i = 0;
+      while (str[i] != '\0')
+        i++;
+    return (i);
+}
+
+int ft_longest_digit(char **numbers, int size)
+{
+   int  i;
+   int  temp;
+   
+   i = 1;
+   temp = ft_len(numbers[1]);
+   while (i < size + 1)
+   {
+    if (ft_len(numbers[i]) > temp)
+       {
+            temp = ft_len(numbers[i]);
+            if (numbers[i][0] == '-')
+                temp -= 1;
+       }
+    i++;
+   } 
+   return (temp);
+}
+
+void    ft_print(int *stak, int size)
+{
+   int  i;
+   
+   i = 0;
+   while (i < size)
+    {
+        ft_printf("%d\n", stak[i]);
+        i++;
+    } 
+}
+
+static int	ft_count(char const *s, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (s[i])
+	{
+		while (s[i] && s[i] == c)
+			i++;
+		if (s[i])
+			count++;
+		while (s[i] && s[i] != c)
+			i++;
+	}
+	return (count);
+}
+
+static int	ft_wordlength(char const *s, char c)
+{
+	int	len;
+
+	len = 0;
+	while (s[len] && s[len] != c)
+		len++;
+	return (len);
+}
+
+static char	*ft_wordcopy(char const *s, char c)
+{
+	int		i;
+	int		len;
+	char	*word;
+
+	i = 0;
+	len = ft_wordlength(s, c);
+	word = (char *)malloc(len + 1);
+	if (!word)
+		return (NULL);
+	while (i < len)
+	{
+		word[i] = s[i];
+		i++;
+	}
+	word[i] = '\0';
+	return (word);
+}
+
+static void	ft_free(char **splitted, size_t n)
+{
+	while (n--)
+	{
+		free(splitted[n]);
+	}
+	free(splitted);
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**array;
+	int		i;
+	int		j;
+
+	if (!s)
+		return (NULL);
+	array = (char **)malloc((ft_count(s, c) + 1) * sizeof(char *));
+	if (!array)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		while (s[i] == c)
+			i++;
+		if (s[i])
+		{
+			array[j++] = ft_wordcopy(&s[i], c);
+			if (!array[j - 1])
+				return (ft_free(array, j), NULL);
+			i += ft_wordlength(&s[i], c);
+		}
+	}
+	array[j] = 0;
+	return (array);
+}
+
+
+void ft_swap_a(int *stak, int n)
+{
+    int temp;
+
+    if (n > 1)
+    {
+        temp = stak[0];
+        stak[0] = stak[1];
+        stak[1] = temp;
+        write (1, "sa\n", 3);
+    }
+}
+void ft_swap_b(int *stak_b, int size_b)
+{
+    int temp;
+
+    if (size_b > 1)
+    {
+        temp = stak_b[0];
+        stak_b[0] = stak_b[1];
+        stak_b[1] = temp;
+        write (1, "sb\n", 3);
+    }
+}
+void ft_swap_a_and_b(int *stak_a, int size_a, int *stak_b, int size_b)
+{
+    int temp;
+
+    if (size_a > 1)
+    {
+        temp = stak_a[0];
+        stak_a[0] = stak_a[1];
+        stak_a[1] = temp;
+    }
+    if (size_b > 1)
+    {
+        temp = stak_b[0];
+        stak_b[0] = stak_b[1];
+        stak_b[1] = temp;
+    }
+    write (1, "ss\n", 3);
+}
+
+void ft_push_a_to_b(int *stak_a, int *size_a, int *stak_b,int *size_b)
+{
+    int *temp;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    temp = (int*)malloc(sizeof(int) * (*size_b + 1));
+    if (temp == NULL)
+        return ;
+    temp[0] = stak_a[0];
+    while (j < *size_b)
+    {
+        temp[j + 1] = stak_b[j];
+        j++;
+    }
+    while(i < *size_b + 1)
+    {
+        stak_b[i] = temp[i];
+        i++;
+    }
+    free (temp);
+    j = 0;
+    while (j < *size_a - 1)
+    {
+        stak_a[j] = stak_a[j + 1];
+        j++;
+    }
+    stak_a[j] = 0;
+    write (1, "pb\n", 3);
+    *size_a -= 1;
+    *size_b += 1;
+}
+
+void ft_push_b_to_a(int *stak_a, int *size_a, int *stak_b,int *size_b)
+{
+    int *temp;
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    temp = (int*)malloc(sizeof(int) * (*size_a + 1));
+    if (temp == NULL)
+        return ;
+    temp[0] = stak_b[0];
+    while (j < *size_a)
+    {
+        temp[j + 1] = stak_a[j];
+        j++;
+    }
+    while(i < *size_a + 1)
+    {
+        stak_a[i] = temp[i];
+        i++;
+    }
+    free (temp);
+    j = 0;
+    while (j < *size_b - 1)
+    {
+        stak_b[j] = stak_b[j + 1];
+        j++;
+    }
+    stak_b[j] = 0;
+    write (1, "pa\n", 3);
+    *size_b -= 1;
+    *size_a += 1;
+}
+
+void    ft_rotate_a(int *stak_a, int size)
+{
+    int temp;
+    int j;
+
+    j = 0;
+    temp = stak_a[0];
+    while (j < size - 1)
+    {
+        stak_a[j] = stak_a[j + 1];
+        j++;
+    }
+    stak_a[size - 1] = temp;
+    write (1, "ra\n", 3); 
+}
+void    ft_reverse_rotate_a(int *stak_a, int size)
+{
+    int temp;
+    int i;
+
+    i = size - 1;
+    temp = stak_a[i];
+    while (i > 0)
+    {
+        stak_a[i] = stak_a[i - 1];
+        i--;
+    }
+    stak_a[i] = temp;
+    write(1, "rra\n", 4);
+}
+
+void    ft_rotate_b(int *stak_b, int size)
+{
+    int temp;
+    int j;
+
+    j = 0;
+    temp = stak_b[0];
+    while (j < size - 1)
+    {
+        stak_b[j] = stak_b[j + 1];
+        j++;
+    }
+    stak_b[size - 1] = temp;
+    write (1, "rb\n", 3); 
+}
+void    ft_reverse_rotate_b(int *stak_b, int size)
+{
+    int temp;
+    int i;
+
+    i = size - 1;
+    temp = stak_b[i];
+    while (i > 0)
+    {
+        stak_b[i] = stak_b[i - 1];
+        i--;
+    }
+    stak_b[i] = temp;
+    write(1, "rrb\n", 4);
+}
+
+void    ft_rotate_a_and_b(int *stak_a, int size_a, int *stak_b, int size_b)
+{
+    int temp;
+    int j;
+
+    j = 0;
+    temp = stak_a[0];
+    while (j < size_a - 1)
+    {
+        stak_a[j] = stak_a[j + 1];
+        j++;
+    }
+    stak_a[size_a - 1] = temp;
+    j = 0;
+    temp = stak_b[0];
+    while (j < size_b - 1)
+    {
+        stak_b[j] = stak_b[j + 1];
+        j++;
+    }
+    stak_b[size_b - 1] = temp;
+    write (1, "rr\n", 3); 
+}
+void    ft_reverse_rotate_a_and_b(int *stak_a, int size_a, int *stak_b, int size_b)
+{
+    int temp;
+    int i;
+
+    i = size_a - 1;
+    temp = stak_a[i];
+    while (i > 0)
+    {
+        stak_a[i] = stak_a[i - 1];
+        i--;
+    }
+    stak_a[i] = temp;
+    i = size_b - 1;
+    temp = stak_b[i];
+    while (i > 0)
+    {
+        stak_b[i] = stak_b[i - 1];
+        i--;
+    }
+    stak_b[i] = temp;
+    write(1, "rrr\n", 4);
+}
+
+
+int ft_cton(char *stak)
+{
+    int i;
+    long int number;
+    int sign;
+    
+    sign = 1;
+    number = 0;
+    i = 0;
+    if (stak[0] == '-')
+    {
+        sign = sign * -1;
+        i++;
+    }
+    if (stak[0] == '+')
+        i++;
+    while (stak[i] >= '0' && stak[i] <= '9')
+    {
+        number = (number * 10) + (stak[i] - '0');
+        if (number >= 9223372036854775807 && sign == -1)
+            return (0);
+        if (number >= 9223372036854775807)
+            return (-1);
+        i++;
+    }
+        return (number * sign);
+    
+}
+int    ft_double_check(int *stak_a, int size_a)
+{
+    int i;
+    int k;
+    
+    i = 0;
+    while (i < size_a)
+    {
+        k = i + 1;
+        while(k < size_a)
+        {
+            if (stak_a[i] == stak_a[k])
+                return (1);
+            k++;
+        }
+        i++;
+    }
+    return (0);
+}
+
+void    ft_arrange(int *stak_a, int *size_a, int *stak_b, int *size_b, int r)
+{
+     int    i;
+     int    k;
+     
+     k = 0;
+        while (k < 10)
+        {
+            i = 0;
+            while (i < *size_a)
+            {
+                if ((stak_a[0] / r) % 10 == k || stak_a[0]< 0)
+                    {
+                        ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+                        i--;
+                    }
+                else
+                    ft_rotate_a(stak_a, *size_a);
+                i++;      
+            }
+            k++;
+        }
+        i = 0;
+        while (i++ < *size_b + *size_a)
+            ft_push_b_to_a(stak_a, size_a, stak_b, size_b);
+}
+void    ft_arrange_n(int *stak_a, int *size_a, int *stak_b, int *size_b, int r)
+{
+     int    i;
+     int    k;
+     
+     k = 0;
+        while (k < 10)
+        {
+            i = 0;
+            while (i < *size_a)
+            {
+                if (stak_a[0] < 0)
+                {
+                    printf("it entered the outerloop ******%d\n", k);
+                    if (((stak_a[0] * -1)/ r)% 10 == (-k / r) % 10)
+                    {
+                        printf("it entered the loop %d\n", k);
+                        ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+                        i--;
+                    }
+                    else
+                    ft_rotate_a(stak_a, *size_a);
+                }
+                else
+                {
+                    ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+                    i--;
+                }
+                i++;      
+            }
+            k++;
+        }
+        printf("stak_b[0] %d\n size_b= %d\n", stak_b[0], *size_b);//
+        i = 0;
+        while (i < *size_b)
+        {
+            ft_push_b_to_a(stak_a, size_a, stak_b, size_b);
+        }
+}
+
+int ft_neg_no(int *stak_a, int  size_a)
+{
+    int i;
+    int no;
+    
+    i = 0;
+    no = 0;
+    while (i < size_a)
+    {
+        if (stak_a[i] < 0)
+            no++;
+        i++;
+    }
+    return (no);
+}
+void    ft_flip_neg(int *stak_a, int *size_a, int *stak_b, int *size_b, int neg)
+{
+    int i;
+
+    i = 0;
+    while (i <neg)
+    {
+        ft_reverse_rotate_a(stak_a, *size_a);
+        ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+        i++;;
+    }
+    while (i)
+    {
+        ft_push_b_to_a(stak_a, size_a, stak_b, size_b);
+        i--;
+    }
+     printf("size_b = %d\n size_a= %d\n number of negative = %d\n stak_b[0]%d\n", *size_b, *size_a, neg, stak_b[0]);//
+}
+
+void    ft_stak_to_stak(int *stak_a, int *size_a, int *stak_b, int *size_b, int n)
+{
+    int m;
+    int r;
+    int neg;
+    
+    neg = ft_neg_no(stak_a, *size_a);
+    m = n;
+    r = 1;
+    while (n)
+    {
+        ft_arrange(stak_a, size_a, stak_b, size_b, r);
+        r *= 10;
+        n--;
+    }
+    r = 1;
+    while (m)
+    {
+        ft_arrange_n(stak_a, size_a, stak_b, size_b, r);
+        r *= 10;
+        m--;
+    }
+    if (neg > 0)
+        ft_flip_neg(stak_a, size_a, stak_b, size_b, neg);
+    printf("size_b = %d\n size_a= %d\n number of negative = %d\n", *size_b, *size_a, neg);//
+}
+
+int ft_check_sorted(int *stak_a, int size_a)
+{
+    int i;
+
+    i = 0;
+    while (i < size_a - 1)
+    {
+        if (stak_a[i] > stak_a[i + 1])
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
+void    ft_3_elements_sort(int *stak_a, int size_a)
+{
+    if (size_a == 2)
+    {
+        if (stak_a[1] < stak_a[0])
+        ft_swap_a(stak_a, size_a); 
+    }
+    else
+    {
+        if (stak_a[1] < stak_a[0])
+            ft_swap_a(stak_a, size_a);
+        if (stak_a[2] < stak_a[0])
+            ft_reverse_rotate_a(stak_a, size_a); 
+        if (stak_a[2] < stak_a[1])
+        {
+            ft_reverse_rotate_a(stak_a, size_a);
+            ft_swap_a(stak_a, size_a);
+        }
+    }
+}
+int ft_closest_node(int stak_a, int *stak_b, int *size_b)
+{
+    int deff;
+    int position;
+    int i;
+    
+    i = 0;
+    position = -1;
+    deff = 2147483647;  // Int max value for comparison
+    while (i < *size_b)
+    {
+        if (stak_a > stak_b[i])
+        {
+            if ( stak_a - stak_b[i] < deff)
+            {
+                deff = stak_a - stak_b[i];
+                position = i;
+            }
+        } 
+        i++;
+    }
+    if (position == -1)
+    {
+        i = 0;
+        deff = stak_b[0];
+        while (i < *size_b)
+        {
+            if (stak_b[i] > deff)
+            {
+                deff = stak_b[i];
+                position = i;
+            } 
+            i++;
+        }
+    }
+    return (position);
+}
+int ft_push_cost(int position_a, int size_a, int closest_node, int size_b)
+{
+     int    a_op;
+     int    b_op;
+     int    push_cost;
+     
+            if (position_a > size_a / 2)
+                a_op = size_a - position_a;
+            else
+                a_op = position_a;      
+             if (closest_node > size_b / 2)
+                b_op = size_b - closest_node;
+            else
+                b_op = closest_node;  
+            push_cost = a_op + b_op;       
+        return (push_cost);
+}
+void    ft_bring_to_top(int *stak_a, int *size_a, int *stak_b, int *size_b, int position_a, int closest_node)
+{
+    int a_op;
+    int b_op;
+    int i;
+
+    i = 0;
+    if (position_a > *size_a / 2 && closest_node > *size_b / 2)
+    {
+        a_op = *size_a - position_a;
+         b_op = *size_b - closest_node;
+        if (a_op == b_op)
+        {
+            while (i++ < a_op)
+                ft_reverse_rotate_a_and_b(stak_a, *size_a, stak_b, *size_b);
+        }
+    }
+    else if (position_a < *size_a / 2 && closest_node < *size_b / 2 )
+    {
+        a_op = position_a;
+        b_op = closest_node;  
+        if (a_op == b_op)
+        {
+            while (i++ < a_op)
+                ft_rotate_a_and_b(stak_a, *size_a, stak_b, *size_b);
+        }
+    }
+    else
+    {
+        if (position_a > *size_a / 2)
+        {
+            a_op = *size_a - position_a;
+            while (i < a_op)
+            {
+                ft_reverse_rotate_a(stak_a, *size_a);
+                i++;
+            }
+        }
+       else
+       {
+            a_op = position_a;
+            while (i < a_op)
+            {
+                ft_rotate_a(stak_a, *size_a);
+                i++;
+            }
+        }
+        i = 0;
+        if (closest_node > *size_b / 2)
+        {
+            b_op = *size_b - closest_node;
+            while (i < b_op)
+            {
+                ft_reverse_rotate_b(stak_b, *size_b);
+                i++;
+            }
+        }
+        else
+        {
+            b_op = closest_node;  
+            while (i < b_op)
+            {
+                ft_rotate_b(stak_b, *size_b);
+                i++;
+            }
+        }
+    }
+}
+int ft_closest_node_a(int *stak_a, int stak_b, int *size_a)
+{
+    int deff;
+    int position;
+    int i;
+    
+    i = 0;
+    position = -1;
+    deff = 2147483647;  // Int max value for comparison
+    while (i < *size_a)
+    {
+        if (stak_b < stak_a[i])
+        {
+            if (stak_a[i] - stak_b < deff)
+            {
+                deff = stak_a[i] - stak_b;
+                position = i;
+            }
+        } 
+        i++;
+    }
+    if (position == -1)
+    {
+        i = 0;
+        deff = stak_a[0];// maximum number
+        while (i < *size_a)
+        {
+            if (stak_a[i] > deff)
+            {
+                deff = stak_a[i];
+                position = i;
+            } 
+            i++;
+        }
+    }
+    return (position);
+}
+int ft_push_cost_a(int position_b, int size_b, int closest_node_a, int size_a)
+{
+     int    a_op;
+     int    b_op;
+     int    push_cost;
+     
+            if (position_b > size_b / 2)
+                b_op = size_b - position_b;
+            else
+                b_op = position_b;      
+            if (closest_node_a > size_a / 2)
+                a_op = size_a - closest_node_a;
+            else
+                a_op = closest_node_a;  
+            push_cost = a_op + b_op;       
+    return (push_cost);
+}
+void    ft_sort_a(int *stak_a, int *size_a, int *stak_b, int *size_b)
+{
+
+    int closest_node_a;
+    int push_cost;
+    int position_b;
+    int temp;
+    int i;
+    int j;
+     
+    position_b = 0;
+    temp = *size_a + *size_b;
+    while (*size_b > 0)
+    {
+        while (position_b < *size_b)
+        {
+            closest_node_a =  ft_closest_node_a(stak_a, stak_b[position_b], size_b);
+            push_cost = ft_push_cost_a(position_b, *size_b, closest_node_a, *size_a);
+            if (push_cost < temp)
+            {
+                temp = push_cost;
+                i = position_b; 
+                j = closest_node_a;                
+            }
+            position_b++;
+        }
+        ft_bring_to_top(stak_a, size_a, stak_b, size_b, j, i);  // if (position_a > *size_a / 2)
+          
+        
+       ft_push_b_to_a(stak_a, size_a, stak_b, size_b);
+    }      
+}
+
+void    ft_sort(int *stak_a, int *size_a, int *stak_b, int *size_b)
+{
+
+    int closest_node;
+    int push_cost;
+    int position_a;
+    int temp;
+    int i;
+    int j;
+     
+    ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+    ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+    if (stak_b[0] > stak_b[1])
+        ft_swap_b(stak_b, *size_b);
+    printf("is the b sorted? %d\n", ft_check_sorted(stak_b, *size_b));
+    position_a = 0;
+    temp = *size_a + *size_b;
+    while (*size_a > 3)
+    {
+       while (position_a < *size_a)
+        {
+            closest_node =  ft_closest_node(stak_a[position_a], stak_b, size_b);
+            push_cost = ft_push_cost(position_a, *size_a, closest_node, *size_b);
+            if (push_cost < temp)
+            {
+                temp = push_cost;
+                i = position_a; 
+                j = closest_node;                 
+            }
+            position_a++;
+        }
+        ft_bring_to_top(stak_a, size_a, stak_b, size_b, i, j);  // if (position_a > *size_a / 2)
+           
+       ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+    }      
+    ft_3_elements_sort(stak_a, *size_a); 
+    printf("is the a sorted? %d\n", ft_check_sorted(stak_a, *size_a));
+   ft_sort_a(stak_a, size_a, stak_b, size_b);
+   printf("is the a sorted? %d\n", ft_check_sorted(stak_a, *size_a));
+}
+
+
+
+int main(int arc, char **argv)
+{
+    int     stak_a[100];
+    int     stak_b[100];
+    int     size_a = 0;
+    int     size_b = 0;
+    char    **arr;
+    int     n;
+    int     i = 1;
+    int     j = 0;
+    int     k;
+    n = ft_longest_digit(argv, size_a);
+    printf("n= %d\n", n);
+    if (arc == 1 || (arc == 2 && !argv[1][0]))
+        return (1); 
+    if (arc >= 2)
+    {
+        while (argv[i] != NULL)
+        {
+            k = 0;
+            arr = ft_split(argv[i], ' ');
+            while (arr[k])
+            {
+                stak_a[j] = ft_cton(arr[k]);
+                if (stak_a[j] <= -2147483648 || stak_a[j] >= 2147483647)
+                {
+                    write (1, "error out of integer limit\n", 27);
+                    return (0);
+                }
+                j++;
+                k++;
+            }
+            i++;
+        }
+        size_a = j;
+    }
+    if (ft_double_check(stak_a, size_a) == 1)
+    {
+        write (1, "error doubles found\n", 20);
+        return (0);
+    }
+    if ( size_a == 2 || size_a == 3)
+    {
+        if (ft_check_sorted(stak_a, size_a) == 0)
+            ft_3_elements_sort(stak_a, size_a);
+    }
+    else if (ft_check_sorted(stak_a, size_a) == 0)
+    {
+       i = 10;
+        while (!ft_check_sorted(stak_a, size_a))
+        {
+        ft_sort(stak_a, &size_a, stak_b, &size_b);
+        i--;
+        }
+    }
+    // write(1, "stak a\n", 7);
+    // ft_print(stak_a, size_a); // needs to be modified
+    // write(1, "stak b\n", 7);
+    // ft_print(stak_b, size_b);
+    // return (0);
+
+
+

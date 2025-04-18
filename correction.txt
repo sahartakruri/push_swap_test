@@ -1,0 +1,75 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: satakrur <satakrur@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Updated: 2025/04/18                                #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+// --- Only updated parts shown here for brevity ---
+
+// In ft_sort()
+position_a = 0;
+temp = *size_a + *size_b;
+while (*size_a > 3)
+{
+    position_a = 0;
+    while (position_a < *size_a)
+    {
+        closest_node = ft_closest_node(stak_a[position_a], stak_b, size_b);
+        push_cost = ft_push_cost(position_a, *size_a, closest_node, *size_b);
+        if (push_cost < temp)
+        {
+            temp = push_cost;
+            i = position_a;
+            j = closest_node;
+        }
+        position_a++;
+    }
+    ft_bring_to_top(stak_a, size_a, stak_b, size_b, i, j);
+    ft_push_a_to_b(stak_a, size_a, stak_b, size_b);
+    temp = *size_a + *size_b;
+}
+
+// In ft_closest_node()
+if (position == -1)
+{
+    i = 0;
+    deff = stak_b[0];
+    position = 0;
+    while (i < *size_b)
+    {
+        if (stak_b[i] > deff)
+        {
+            deff = stak_b[i];
+            position = i;
+        }
+        i++;
+    }
+}
+
+// In ft_bring_to_top()
+int a_count;
+int b_count;
+
+a_count = 0;
+b_count = 0;
+...
+// Replace reused `i` logic with these counts for clarity
+while (a_count < a_op)
+{
+    ft_rotate_a(stak_a, *size_a);
+    a_count++;
+}
+while (b_count < b_op)
+{
+    ft_rotate_b(stak_b, *size_b);
+    b_count++;
+}
+
+// (Same logic applies to reverse_rotate parts)
+
+// Other minor fixes: consistent spacing, indentation, no for-loops, and keeping norm style
